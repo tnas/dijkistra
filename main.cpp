@@ -1,47 +1,199 @@
 #include <iostream>
+#include <vector>
+#include <string>
+#include <inttypes.h>
+#include <fstream>
+#include <assert.h>
+#include <sstream>
 
-//#include <boost/version.hpp>
-//#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dimacs.hpp>
-#include <boost/graph/graphviz.hpp>
+#include <boost/cstdint.hpp> // ver o que eh
+#include <boost/integer_traits.hpp> // ver o que eh
+#include <boost/progress.hpp> // ver o que eh
+
+using namespace boost;
+using boost::timer;
+
+using namespace std;
+using std::vector;
 
 
-using namespace boost::graph;
+typedef int32_t    node_t;
+typedef int32_t    edge_t;
+typedef int64_t    cost_t;
+
+
+/// Label for the labeling and/or dijkstra algorithm
+enum Label { UNREACHED, LABELED, SCANNED };
+
+
+/// Simple Arc class: store tuple (i,j,c)
+class Arc {
+   public:
+      node_t    w;  /// Target node
+      cost_t    c;  /// Cost of the arc
+      /// Standard constructor
+      Arc ( node_t _w, cost_t _c ) 
+         : w(_w), c(_c) {}
+};
+
+
+/// Forward and Backward star: intrusive list
+typedef vector<Arc>    FSArcList;
+typedef FSArcList::iterator FSArcIter;
+
+
+class Digraph {
   
-typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> Graph;
-typedef typename boost::graph_traits<Graph>::edge_descriptor Edge;
-typedef typename boost::graph_traits<Graph>::vertex_descriptor Vertex;
+   private:
+      node_t  n;
+      edge_t  m;
 
+      vector<FSArcList>  Nc;   /// Nodes container
+
+      /// Initialize distance vector with Infinity
+      /// Maybe it is better to intialize with an upper bound on the optimal path (optimal rcsp path)
+      const cost_t Inf;
+      
+   public:
+      ///Standard constructor
+      Digraph( node_t _n, edge_t _m ) 
+         : n(_n), m(_m), Inf(std::numeric_limits<cost_t>::max())
+      {
+         assert( n < Inf && m < Inf );
+         Nc.reserve(n);
+         /// Reserve memory for the set of arcs
+         int avg_degree = m/n+1;
+         for ( int i = 0; i < n; ++i ) {
+            FSArcList tmp;
+            tmp.reserve(avg_degree);
+            Nc.push_back(tmp);
+         }
+      }
+      
+      void addArc( node_t i, node_t j, cost_t c ) {    
+         Nc[i].push_back( Arc(j, c) );
+      }
+     
+      ///--------------------------------------------------
+      /// Shortest Path for a graph with positive weights
+      /// With a Fibonacci Heap, as given in the book "Algorithms" by Vazirani et all.
+      /// NOTE: since 'increase' is O(1), while 'decrease' is O(log n)
+      /// We use negative distances in the heap, i.e., we start with distance labels set to -\infinity
+      /// However, the distance labels are kept with the correct value 
+      /*
+      template <typename PriorityQueue>
+      cost_t spp ( node_t S, node_t T, vector<node_t>& P ) {    
+         typedef typename PriorityQueue::handle_type     handle_t;
+
+         PriorityQueue     H;
+         vector<handle_t>  K(n);
+         vector<Label>     Q(n,UNREACHED);  /// true if it is in the heap
+         
+         /// Initialize the source distance
+         //D[S] = 0;
+         K[S] = H.push( ValueKey(0,S) );
+         while ( !H.empty() ) {
+            /// u = deleteMin(H)
+            ValueKey p = H.top();
+            H.pop();
+            node_t u  = p.u;
+            Q[u] = SCANNED;
+            cost_t Du = -(*K[u]).d;
+            if ( u == T ) { break; }
+            /// for all edges (u, v) \in E
+            for ( FSArcIter it = Nc[u].begin(), it_end = Nc[u].end(); it != it_end; ++it ) {
+               node_t v   = it->w;
+               if ( Q[v] != SCANNED ) {
+                  cost_t Duv = it->c;
+                  cost_t Dv  = Du + Duv;
+                  if ( Q[v] == UNREACHED ) {
+                     P[v] = u;
+                     Q[v] = LABELED;
+                     K[v] = H.push( ValueKey(-Dv,v) );
+                  } else {
+                     if ( -(*K[v]).d > Dv ) {
+                        P[v] = u;
+                        H.increase( K[v], ValueKey(-Dv,v) );
+                     }
+                  }
+               }
+            }
+         }
+         assert( R[T] == SCANNED );
+         return -(*K[T]).d;
+      }
+      */
+};
+
+
+/// Read input data, build graph, and run Dijkstra
+cost_t runDijkstra( char* argv[] ) {
+  
+   /// Read instance from the DIMACS
+   ifstream infile(argv[1]); 
+   if (!infile) 
+      exit ( EXIT_FAILURE ); 
+
+   int n_nodes;     /// Number of nodes
+   int m_edges;     /// Number of edges
+      
+   string line, ps;
+   char lineheader;
+   bool finishedHeader = false;
+   
+   // Reading file header
+   while (!finishedHeader) {
+     getline(infile, line);
+     istringstream linestream(line);
+     linestream >> lineheader;
+     
+     switch(lineheader) {
+       case 'c': break;
+       case 'p':
+	 linestream >> ps >> n_nodes >> m_edges;
+	 break;
+       case 'a': 
+	 finishedHeader = true;
+	 break;
+     }
+   }
+   
+   /// Build the graph
+   Digraph Graph(n_nodes, m_edges);
+   
+   int v, w;
+   cost_t c;
+   
+   // Reading file body
+   do {
+     istringstream linestream(line);
+     linestream >> lineheader >> v >> w >> c;
+     Graph.addArc(v-1, w-1, c);
+   } while (getline(infile, line));
+   
+   
+   vector<node_t> P(n_nodes);
+   cost_t T_dist; 
+   
+
+   return T_dist;
+   
+}
 
 
 
 
 int main(int argc, char **argv) {
     
-  std::ifstream inGraphFile;
-  inGraphFile.open("instances/USA-road-d.NY.gr");
+  if (argc != 2) {
+      cout << "usage: ./dijkstra <filename>\n";
+      exit ( EXIT_FAILURE );
+  }
   
-  
-  dimacs_basic_reader reader(inGraphFile, false);
-  dimacs_basic_reader end;
-  
-  dimacs_edge_iterator<dimacs_basic_reader> dimacsStart(reader);
-  dimacs_edge_iterator<dimacs_basic_reader> endIter(end);
-  
-  Graph graph(dimacsStart, endIter, reader.n_vertices());
-  boost::write_graphviz<Graph>(std::cout, graph); 
+  /// Invoke the Dijkstra algorithm implementation
+   cost_t T_dist = runDijkstra(argv);
   
   return 0;
 }
 
 
-
-void get_boost_version() 
-{
-  std::cout << "Using Boost "
-	    << BOOST_VERSION / 100000 << "."
-	    << BOOST_VERSION / 100 % 1000 << "."
-	    << BOOST_VERSION % 100
-	    << std::endl;
-}
