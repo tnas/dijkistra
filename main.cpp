@@ -45,10 +45,10 @@ typedef FSArcList::iterator FSArcIter;
 class Digraph {
   
    private:
-      node_t  n;
-      edge_t  m;
+      node_t  n_nodes;
+      edge_t  m_edges;
 
-      vector<FSArcList>  Nc;   /// Nodes container
+      vector<FSArcList> adjacency_list;   
 
       /// Initialize distance vector with Infinity
       /// Maybe it is better to intialize with an upper bound on the optimal path (optimal rcsp path)
@@ -56,22 +56,22 @@ class Digraph {
       
    public:
       ///Standard constructor
-      Digraph( node_t _n, edge_t _m ) 
-         : n(_n), m(_m), Inf(std::numeric_limits<cost_t>::max())
+      Digraph(node_t _n, edge_t _m) 
+         : n_nodes(_n), m_edges(_m), Inf(std::numeric_limits<cost_t>::max())
       {
-         assert( n < Inf && m < Inf );
-         Nc.reserve(n);
+         assert( n_nodes < Inf && m_edges < Inf );
+         adjacency_list.reserve(n_nodes);
          /// Reserve memory for the set of arcs
-         int avg_degree = m/n+1;
-         for ( int i = 0; i < n; ++i ) {
+         int avg_degree = m_edges/n_nodes+1;
+         for ( int i = 0; i < n_nodes; ++i ) {
             FSArcList tmp;
             tmp.reserve(avg_degree);
-            Nc.push_back(tmp);
+            adjacency_list.push_back(tmp);
          }
       }
       
-      void addArc( node_t i, node_t j, cost_t c ) {    
-         Nc[i].push_back( Arc(j, c) );
+      void addArc(node_t source_node, node_t target_node, cost_t cost) {    
+         adjacency_list[source_node].push_back(Arc(target_node, cost));
       }
      
       ///--------------------------------------------------
@@ -175,6 +175,7 @@ cost_t runDijkstra( char* argv[] ) {
    vector<node_t> P(n_nodes);
    cost_t T_dist; 
    
+   // TODO: Dijikistra execution
 
    return T_dist;
    
