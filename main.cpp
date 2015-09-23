@@ -9,6 +9,7 @@
 #include <boost/cstdint.hpp> // ver o que eh
 #include <boost/integer_traits.hpp> // ver o que eh
 #include <boost/progress.hpp> // ver o que eh
+#include <boost/heap/d_ary_heap.hpp>
 
 using namespace boost;
 using boost::timer;
@@ -20,6 +21,21 @@ using std::vector;
 typedef int32_t    node_t;
 typedef int32_t    edge_t;
 typedef int64_t    cost_t;
+
+
+/// Data structure to store Key-Value pairs in a 
+/// PriorityQueue (as a Fibonacci heap)
+struct ValueKey {
+   cost_t d;
+   node_t u;
+   ValueKey(cost_t _d, node_t _u)
+      : d(_d), u(_u) {}
+   /// The relation establishes the order in the PriorityQueue
+   inline bool operator<(const ValueKey& rhs) const { return d < rhs.d; }
+};
+
+
+typedef boost::heap::d_ary_heap<ValueKey, boost::heap::arity<2>, boost::heap::mutable_<true> > BinaryHeap;
 
 
 /// Label for the labeling and/or dijkstra algorithm
@@ -191,8 +207,11 @@ int main(int argc, char **argv) {
       exit ( EXIT_FAILURE );
   }
   
+  //ValueKey val1(10, 5), val2(20, 9);
+  //if (val1 < val2) cout << "val1 < val2\n";
+  
   /// Invoke the Dijkstra algorithm implementation
-   cost_t T_dist = runDijkstra(argv);
+  cost_t T_dist = runDijkstra(argv);
   
   return 0;
 }
