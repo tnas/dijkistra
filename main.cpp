@@ -54,7 +54,7 @@ class Arc {
 
 
 /// Forward and Backward star: intrusive list
-typedef vector<Arc>    FSArcList;
+typedef vector<Arc> 	    FSArcList;
 typedef FSArcList::iterator FSArcIter;
 
 
@@ -88,6 +88,25 @@ class Digraph {
       
       void addArc(node_t source_node, node_t target_node, cost_t cost) {    
          adjacency_list[source_node].push_back(Arc(target_node, cost));
+      }
+      
+      void print_adjacency_list() {
+	
+	vector<FSArcList>::iterator it_nodes;
+	node_t node = 0;
+	
+	for (it_nodes = adjacency_list.begin(); it_nodes < adjacency_list.end(); ++it_nodes) {
+	  
+	  cout << "from: " << node++ << " ==> ";
+	  
+	  FSArcIter it_arc;
+	  
+	  for (it_arc = (*it_nodes).begin(); it_arc < (*it_nodes).end(); ++it_arc) {
+	    cout << "to:" << (*it_arc).w << " (" << (*it_arc).c << ") | ";
+	  }
+	  
+	  cout << "\n";
+	}
       }
      
       ///--------------------------------------------------
@@ -188,6 +207,9 @@ cost_t runDijkstra( char* argv[] ) {
    } while (getline(infile, line));
    
    
+   // Printing Digraph's adjacency_list
+   Graph.print_adjacency_list();
+   
    vector<node_t> P(n_nodes);
    cost_t T_dist; 
    
@@ -206,9 +228,6 @@ int main(int argc, char **argv) {
       cout << "usage: ./dijkstra <filename>\n";
       exit ( EXIT_FAILURE );
   }
-  
-  //ValueKey val1(10, 5), val2(20, 9);
-  //if (val1 < val2) cout << "val1 < val2\n";
   
   /// Invoke the Dijkstra algorithm implementation
   cost_t T_dist = runDijkstra(argv);
