@@ -81,7 +81,7 @@ class Digraph {
          int avg_degree = m_edges/n_nodes+1;
          for ( int i = 0; i < n_nodes; ++i ) {
             FSArcList tmp;
-            tmp.reserve(avg_degree);
+            tmp.reserve(avg_degree);   
             adjacency_list.push_back(tmp);
          }
       }
@@ -115,18 +115,18 @@ class Digraph {
       /// NOTE: since 'increase' is O(1), while 'decrease' is O(log n)
       /// We use negative distances in the heap, i.e., we start with distance labels set to -\infinity
       /// However, the distance labels are kept with the correct value 
-      /*
+      
       template <typename PriorityQueue>
-      cost_t spp ( node_t S, node_t T, vector<node_t>& P ) {    
+      cost_t shortest_path(node_t start_node, node_t end_node, vector<node_t>& path) {    
          typedef typename PriorityQueue::handle_type     handle_t;
 
          PriorityQueue     H;
-         vector<handle_t>  K(n);
-         vector<Label>     Q(n,UNREACHED);  /// true if it is in the heap
-         
+         vector<handle_t>  K(n_nodes);
+         vector<Label>     Q(n_nodes, UNREACHED);  
+	 
          /// Initialize the source distance
-         //D[S] = 0;
-         K[S] = H.push( ValueKey(0,S) );
+         K[start_node] = H.push(ValueKey(0,S));
+         /*
          while ( !H.empty() ) {
             /// u = deleteMin(H)
             ValueKey p = H.top();
@@ -134,7 +134,7 @@ class Digraph {
             node_t u  = p.u;
             Q[u] = SCANNED;
             cost_t Du = -(*K[u]).d;
-            if ( u == T ) { break; }
+            if ( u == end_node ) { break; }
             /// for all edges (u, v) \in E
             for ( FSArcIter it = Nc[u].begin(), it_end = Nc[u].end(); it != it_end; ++it ) {
                node_t v   = it->w;
@@ -142,12 +142,12 @@ class Digraph {
                   cost_t Duv = it->c;
                   cost_t Dv  = Du + Duv;
                   if ( Q[v] == UNREACHED ) {
-                     P[v] = u;
+                     path[v] = u;
                      Q[v] = LABELED;
                      K[v] = H.push( ValueKey(-Dv,v) );
                   } else {
                      if ( -(*K[v]).d > Dv ) {
-                        P[v] = u;
+                        path[v] = u;
                         H.increase( K[v], ValueKey(-Dv,v) );
                      }
                   }
@@ -155,9 +155,10 @@ class Digraph {
             }
          }
          assert( R[T] == SCANNED );
-         return -(*K[T]).d;
+         */
+         return -(*K[end_node]).d;
       }
-      */
+      
 };
 
 
