@@ -135,7 +135,7 @@ class Digraph {
             digraph_priority_queue.pop();
             node_t current_node  = p.u;
             node_status[current_node] = CLOSED;
-            cost_t Du = (*distance_from_source[current_node]).d;
+            cost_t Du = -(*distance_from_source[current_node]).d;
 	    
             if (current_node == end_node) { break; }
             
@@ -152,19 +152,19 @@ class Digraph {
                   if (node_status[target_node] == UNREACHED) {
                      previous[target_node] = current_node;
                      node_status[target_node] = LABELED;
-                     distance_from_source[target_node] = digraph_priority_queue.push(ValueKey(Dv, target_node));
+                     distance_from_source[target_node] = digraph_priority_queue.push(ValueKey(-Dv, target_node));
                   } 
                   else {
-                     if ((*distance_from_source[target_node]).d > Dv) {
+                     if (-(*distance_from_source[target_node]).d > Dv) {
                         previous[target_node] = current_node;
-                        digraph_priority_queue.decrease(distance_from_source[target_node], ValueKey(Dv,target_node));
+                        digraph_priority_queue.increase(distance_from_source[target_node], ValueKey(-Dv, target_node));
                      }
                   }
                }
             }
          }
          
-         return (*distance_from_source[end_node]).d;
+         return -(*distance_from_source[end_node]).d;
       }
       
       void print_vector(vector<node_t> previous) {
