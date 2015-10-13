@@ -39,7 +39,7 @@ typedef boost::heap::d_ary_heap<ValueKey, boost::heap::arity<2>, boost::heap::mu
 
 
 /// Label for the labeling and/or dijkstra algorithm
-enum Label { UNREACHED, LABELED, SCANNED };
+enum Label { UNREACHED, LABELED, CLOSED };
 
 
 /// Simple Arc class: store tuple (i,j,c)
@@ -67,7 +67,6 @@ class Digraph {
       vector<FSArcList> adjacency_list;   
 
       /// Initialize distance vector with Infinity
-      /// Maybe it is better to intialize with an upper bound on the optimal path (optimal rcsp path)
       const cost_t Inf;
       
    public:
@@ -75,7 +74,7 @@ class Digraph {
       Digraph(node_t _n, edge_t _m) 
          : n_nodes(_n), m_edges(_m), Inf(std::numeric_limits<cost_t>::max())
       {
-         assert( n_nodes < Inf && m_edges < Inf );
+         assert(n_nodes < Inf && m_edges < Inf);
          adjacency_list.reserve(n_nodes);
          /// Reserve memory for the set of arcs
          int avg_degree = m_edges/n_nodes+1;
@@ -117,46 +116,61 @@ class Digraph {
       /// However, the distance labels are kept with the correct value 
       
       template <typename PriorityQueue>
-      cost_t shortest_path(node_t start_node, node_t end_node, vector<node_t>& path) {    
+      cost_t shortest_path(node_t start_node, node_t end_node, vector<node_t>& previous) {    
+	
          typedef typename PriorityQueue::handle_type     handle_t;
-
-         PriorityQueue     H;
-         vector<handle_t>  K(n_nodes);
-         vector<Label>     Q(n_nodes, UNREACHED);  
+	 
+         PriorityQueue     digraph_priority_queue;
+         vector<handle_t>  distance_from_source(n_nodes);
+         vector<Label>     node_status(n_nodes, UNREACHED);  
 	 
          /// Initialize the source distance
-         K[start_node] = H.push(ValueKey(0,S));
-         /*
-         while ( !H.empty() ) {
-            /// u = deleteMin(H)
-            ValueKey p = H.top();
-            H.pop();
-            node_t u  = p.u;
-            Q[u] = SCANNED;
-            cost_t Du = -(*K[u]).d;
-            if ( u == end_node ) { break; }
-            /// for all edges (u, v) \in E
-            for ( FSArcIter it = Nc[u].begin(), it_end = Nc[u].end(); it != it_end; ++it ) {
-               node_t v   = it->w;
-               if ( Q[v] != SCANNED ) {
-                  cost_t Duv = it->c;
+         distance_from_source[start_node] = digraph_priority_queue.push(ValueKey(0, start_node));
+         
+         while (!digraph_priority_queue.empty()) {
+	   
+	    print_vector(previous);
+	   
+            ValueKey p = digraph_priority_queue.top();
+            digraph_priority_queue.pop();
+            node_t current_node  = p.u;
+            node_status[current_node] = CLOSED;
+            cost_t Du = (*distance_from_source[current_node]).d;
+	    
+            if (current_node == end_node) { break; }
+            
+            /// For all edges (u, v) in E
+            for (FSArcIter arc_iter = adjacency_list[current_node].begin(), it_end = adjacency_list[current_node].end(); arc_iter != it_end; ++arc_iter) {
+	      
+               node_t target_node = arc_iter->w;
+	       
+               if (node_status[target_node] != CLOSED) {
+		 
+                  cost_t Duv = arc_iter->c;
                   cost_t Dv  = Du + Duv;
-                  if ( Q[v] == UNREACHED ) {
-                     path[v] = u;
-                     Q[v] = LABELED;
-                     K[v] = H.push( ValueKey(-Dv,v) );
-                  } else {
-                     if ( -(*K[v]).d > Dv ) {
-                        path[v] = u;
-                        H.increase( K[v], ValueKey(-Dv,v) );
+		  
+                  if (node_status[target_node] == UNREACHED) {
+                     previous[target_node] = current_node;
+                     node_status[target_node] = LABELED;
+                     distance_from_source[target_node] = digraph_priority_queue.push(ValueKey(Dv, target_node));
+                  } 
+                  else {
+                     if ((*distance_from_source[target_node]).d > Dv) {
+                        previous[target_node] = current_node;
+                        digraph_priority_queue.decrease(distance_from_source[target_node], ValueKey(Dv,target_node));
                      }
                   }
                }
             }
          }
-         assert( R[T] == SCANNED );
-         */
-         return -(*K[end_node]).d;
+         
+         return (*distance_from_source[end_node]).d;
+      }
+      
+      void print_vector(vector<node_t> previous) {
+	for (vector<node_t>::iterator iter = previous.begin(); iter != previous.end(); ++iter) 
+	  cout << *iter << " ";
+	cout << "\n";
       }
       
 };
@@ -211,12 +225,17 @@ cost_t runDijkstra( char* argv[] ) {
    // Printing Digraph's adjacency_list
    Graph.print_adjacency_list();
    
-   vector<node_t> P(n_nodes);
-   cost_t T_dist; 
+   vector<node_t> Path(n_nodes);
+   cost_t dist; 
    
-   // TODO: Dijikistra execution
+   // Dijikistra execution
+   dist = Graph.shortest_path<BinaryHeap>(0, 5, Path);
+   
+   cout << "Total Distance: " << dist << "\n";
+   for (vector<node_t>::iterator iter = Path.begin(); iter != Path.end(); ++iter)
+     cout << *iter << " ";
 
-   return T_dist;
+   return dist;
    
 }
 
