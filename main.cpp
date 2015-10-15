@@ -10,6 +10,7 @@
 #include <boost/integer_traits.hpp> // ver o que eh
 #include <boost/progress.hpp> // ver o que eh
 #include <boost/heap/d_ary_heap.hpp>
+#include <boost/heap/fibonacci_heap.hpp>
 
 using namespace boost;
 using boost::timer;
@@ -22,6 +23,7 @@ typedef int32_t    node_t;
 typedef int32_t    edge_t;
 typedef int64_t    cost_t;
 
+void inline print_distance_vector(vector<node_t> path);
 
 /// Data structure to store Key-Value pairs in a 
 /// PriorityQueue (as a Fibonacci heap)
@@ -36,6 +38,7 @@ struct ValueKey {
 
 
 typedef boost::heap::d_ary_heap<ValueKey, boost::heap::arity<2>, boost::heap::mutable_<true> > BinaryHeap;
+typedef boost::heap::fibonacci_heap<ValueKey> FibonacciHeap;
 
 
 /// Label for the labeling and/or dijkstra algorithm
@@ -110,11 +113,7 @@ class Digraph {
      
       ///--------------------------------------------------
       /// Shortest Path for a graph with positive weights
-      /// With a Fibonacci Heap, as given in the book "Algorithms" by Vazirani et all.
-      /// NOTE: since 'increase' is O(1), while 'decrease' is O(log n)
-      /// We use negative distances in the heap, i.e., we start with distance labels set to -\infinity
-      /// However, the distance labels are kept with the correct value 
-      
+      ///--------------------------------------------------
       template <typename PriorityQueue>
       cost_t shortest_path(node_t start_node, node_t end_node, vector<node_t>& previous) {    
 	
@@ -129,7 +128,7 @@ class Digraph {
          
          while (!digraph_priority_queue.empty()) {
 	   
-	    print_vector(previous);
+	    //print_vector(previous);
 	   
             ValueKey p = digraph_priority_queue.top();
             digraph_priority_queue.pop();
@@ -223,24 +222,40 @@ cost_t runDijkstra( char* argv[] ) {
    
    
    // Printing Digraph's adjacency_list
-   Graph.print_adjacency_list();
+   //Graph.print_adjacency_list();
    
    vector<node_t> Path(n_nodes);
    cost_t dist; 
    
    // Dijikistra execution
+   timer execution_timer;
+   double init_time = execution_timer.elapsed();
    dist = Graph.shortest_path<BinaryHeap>(0, 5, Path);
+   cout << "Run Dijikistra - Binary Heap\n";
+   cout << "Distance Vector: ";
+   print_distance_vector(Path);
+   fprintf(stdout, "Time: %.4f, Cost: %d\n", execution_timer.elapsed() - init_time, dist);
    
-   cout << "Total Distance: " << dist << "\n";
-   for (vector<node_t>::iterator iter = Path.begin(); iter != Path.end(); ++iter)
-     cout << *iter << " ";
+   cout << "\n";
+   
+   // Dijikistra execution
+   init_time = execution_timer.elapsed();
+   dist = Graph.shortest_path<FibonacciHeap>(0, 5, Path);
+   cout << "Run Dijikistra - Fibonacci Heap\n";
+   cout << "Distance Vector: ";
+   print_distance_vector(Path);
+   fprintf(stdout, "Time: %.4f, Cost: %d\n", execution_timer.elapsed() - init_time, dist);
 
    return dist;
    
 }
 
 
-
+void inline print_distance_vector(vector<node_t> path) {
+  for (vector<node_t>::iterator iter = path.begin(); iter != path.end(); ++iter)
+     cout << *iter << " ";
+  cout << "\n";
+}
 
 int main(int argc, char **argv) {
     
