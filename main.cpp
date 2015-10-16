@@ -12,6 +12,8 @@
 #include <boost/heap/d_ary_heap.hpp>
 #include <boost/heap/fibonacci_heap.hpp>
 
+#include "dumbqueue.h"
+
 using namespace boost;
 using boost::timer;
 
@@ -39,6 +41,7 @@ struct ValueKey {
 
 typedef boost::heap::d_ary_heap<ValueKey, boost::heap::arity<2>, boost::heap::mutable_<true> > BinaryHeap;
 typedef boost::heap::fibonacci_heap<ValueKey> FibonacciHeap;
+typedef DumbQueue<ValueKey> SimpleQueue;
 
 
 /// Label for the labeling and/or dijkstra algorithm
@@ -227,14 +230,25 @@ cost_t runDijkstra( char* argv[] ) {
    vector<node_t> Path(n_nodes);
    cost_t dist; 
    
+   
    // Dijikistra execution
    timer execution_timer;
    double init_time = execution_timer.elapsed();
+   dist = Graph.shortest_path<SimpleQueue>(0, 5, Path);
+   cout << "Run Dijikistra - Traditional Queue\n";
+   cout << "Distance Vector: ";
+   print_distance_vector(Path);
+   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
+   cout << "\n";
+   
+   
+   // Dijikistra execution
+   init_time = execution_timer.elapsed();
    dist = Graph.shortest_path<BinaryHeap>(0, 5, Path);
    cout << "Run Dijikistra - Binary Heap\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
-   fprintf(stdout, "Time: %.4f, Cost: %d\n", execution_timer.elapsed() - init_time, dist);
+   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
    
    cout << "\n";
    
@@ -244,7 +258,7 @@ cost_t runDijkstra( char* argv[] ) {
    cout << "Run Dijikistra - Fibonacci Heap\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
-   fprintf(stdout, "Time: %.4f, Cost: %d\n", execution_timer.elapsed() - init_time, dist);
+   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
 
    return dist;
    
@@ -266,6 +280,12 @@ int main(int argc, char **argv) {
   
   /// Invoke the Dijkstra algorithm implementation
   cost_t T_dist = runDijkstra(argv);
+  
+  
+  //DumbQueue<int>::handle
+  
+  
+  
   
   return 0;
 }
