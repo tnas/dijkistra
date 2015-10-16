@@ -36,6 +36,7 @@ struct ValueKey {
       : d(_d), u(_u) {}
    /// The relation establishes the order in the PriorityQueue
    inline bool operator<(const ValueKey& rhs) const { return d < rhs.d; }
+   inline void operator=(const ValueKey& rhs) { d = rhs.d; }
 };
 
 

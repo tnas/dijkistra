@@ -39,24 +39,19 @@ public:
       T operator*() const;
     };
 
-    
     DumbQueue();
     ~DumbQueue();
-    
-    //DumbQueue& operator=(DumbQueue const &);
-    //bool operator==(const DumbQueue& other);
     
     bool empty();
     T push(T node);
     void pop();
     void increase(T target, T update);
+    T top();
 };
 
 // ************************
 // Template Implementation
 // ************************
-
-
 template<typename T>
 DumbQueue<T>::DumbQueue()
 {
@@ -122,3 +117,16 @@ void DumbQueue<T>::increase(T target, T update)
   }
 }
 
+template<typename T>
+T DumbQueue<T>::top()
+{
+  typedef typename vector<T>::iterator vector_iterator;
+  
+  vector_iterator max_element = queue.begin();
+  
+  vector_iterator it;
+  for (it = queue.begin(); it != queue.end(); ++it)
+    if (*it > *max_element) max_element = it;
+  
+  return *max_element;
+}
