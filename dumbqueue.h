@@ -33,12 +33,7 @@ class DumbQueue
 private :
     vector<T> queue;
 public:
-    
-    struct handle_type 
-    { 
-      T operator*() const;
-    };
-
+  
     DumbQueue();
     ~DumbQueue();
     
@@ -91,12 +86,6 @@ void DumbQueue<T>::pop()
   
   // swapping max element and last element
   iter_swap(max_element, it);
-  
-  /*  
-  T temp = *it; 
-  *it = *max_element;
-  *max_element = temp;
-  */
   
   queue.pop_back();
 }

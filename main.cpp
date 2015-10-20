@@ -27,8 +27,7 @@ typedef int64_t    cost_t;
 
 void inline print_distance_vector(vector<node_t> path);
 
-/// Data structure to store Key-Value pairs in a 
-/// PriorityQueue (as a Fibonacci heap)
+/// Data structure to store Key-Value pairs in a PriorityQueue
 struct ValueKey {
    cost_t d;
    node_t u;
@@ -36,7 +35,8 @@ struct ValueKey {
       : d(_d), u(_u) {}
    /// The relation establishes the order in the PriorityQueue
    inline bool operator<(const ValueKey& rhs) const { return d < rhs.d; }
-   inline void operator=(const ValueKey& rhs) { d = rhs.d; }
+   inline bool operator>(const ValueKey& rhs) const { return d > rhs.d; }
+   inline bool operator==(const ValueKey& rhs) const { return u == rhs.u; }
 };
 
 
@@ -132,8 +132,6 @@ class Digraph {
          
          while (!digraph_priority_queue.empty()) {
 	   
-	    //print_vector(previous);
-	   
             ValueKey p = digraph_priority_queue.top();
             digraph_priority_queue.pop();
             node_t current_node  = p.u;
@@ -169,6 +167,57 @@ class Digraph {
          
          return -(*distance_from_source[end_node]).d;
       }
+      
+      
+      template <typename CustomQueue>
+      cost_t shortest_path_for_dummies(node_t start_node, node_t end_node, vector<node_t>& previous) {    
+	
+         CustomQueue      digraph_priority_queue;
+         vector<ValueKey> distance_from_source(n_nodes, ValueKey(0, 0));
+	 vector<Label>    node_status(n_nodes, UNREACHED);  
+	 
+         /// Initialize the source distance
+         distance_from_source[start_node] = digraph_priority_queue.push(ValueKey(0, start_node));
+         
+         while (!digraph_priority_queue.empty()) {
+	   
+            ValueKey p = digraph_priority_queue.top();
+            digraph_priority_queue.pop();
+            node_t current_node  = p.u;
+            node_status[current_node] = CLOSED;
+            cost_t Du = -(distance_from_source[current_node]).d;
+	    
+            if (current_node == end_node) { break; }
+            
+            /// For all edges (u, v) in E
+            for (FSArcIter arc_iter = adjacency_list[current_node].begin(), it_end = adjacency_list[current_node].end(); arc_iter != it_end; ++arc_iter) {
+	      
+               node_t target_node = arc_iter->w;
+	       
+               if (node_status[target_node] != CLOSED) {
+		 
+                  cost_t Duv = arc_iter->c;
+                  cost_t Dv  = Du + Duv;
+		  
+                  if (node_status[target_node] == UNREACHED) {
+                     previous[target_node] = current_node;
+                     node_status[target_node] = LABELED;
+                     distance_from_source[target_node] = digraph_priority_queue.push(ValueKey(-Dv, target_node));
+                  } 
+                  else {
+                     if (-(distance_from_source[target_node]).d > Dv) {
+                        previous[target_node] = current_node;
+                        digraph_priority_queue.increase(distance_from_source[target_node], ValueKey(-Dv, target_node));
+                     }
+                  }
+               }
+            }
+         }
+         
+         return -(distance_from_source[end_node]).d;
+      }
+      
+      
       
       void print_vector(vector<node_t> previous) {
 	for (vector<node_t>::iterator iter = previous.begin(); iter != previous.end(); ++iter) 
@@ -224,24 +273,19 @@ cost_t runDijkstra( char* argv[] ) {
      Graph.addArc(v-1, w-1, c);
    } while (getline(infile, line));
    
-   
-   // Printing Digraph's adjacency_list
-   //Graph.print_adjacency_list();
-   
    vector<node_t> Path(n_nodes);
    cost_t dist; 
-   
    
    // Dijikistra execution
    timer execution_timer;
    double init_time = execution_timer.elapsed();
-   dist = Graph.shortest_path<SimpleQueue>(0, 5, Path);
+   dist = Graph.shortest_path_for_dummies<SimpleQueue>(0, 5, Path);
    cout << "Run Dijikistra - Traditional Queue\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
    fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
-   cout << "\n";
    
+   cout << "\n";
    
    // Dijikistra execution
    init_time = execution_timer.elapsed();
@@ -262,7 +306,6 @@ cost_t runDijkstra( char* argv[] ) {
    fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
 
    return dist;
-   
 }
 
 
@@ -271,6 +314,7 @@ void inline print_distance_vector(vector<node_t> path) {
      cout << *iter << " ";
   cout << "\n";
 }
+
 
 int main(int argc, char **argv) {
     
@@ -281,12 +325,6 @@ int main(int argc, char **argv) {
   
   /// Invoke the Dijkstra algorithm implementation
   cost_t T_dist = runDijkstra(argv);
-  
-  
-  //DumbQueue<int>::handle
-  
-  
-  
   
   return 0;
 }
