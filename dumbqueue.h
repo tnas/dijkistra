@@ -84,9 +84,8 @@ void DumbQueue<T>::pop()
   for (it = queue.begin(); it != queue.end(); ++it)
     if (*it > *max_element) max_element = it;
   
-  // swapping max element and last element
-  iter_swap(max_element, it);
-  
+  queue.push_back(*max_element);
+  queue.erase(max_element);
   queue.pop_back();
 }
 

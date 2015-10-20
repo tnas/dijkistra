@@ -37,6 +37,7 @@ struct ValueKey {
    inline bool operator<(const ValueKey& rhs) const { return d < rhs.d; }
    inline bool operator>(const ValueKey& rhs) const { return d > rhs.d; }
    inline bool operator==(const ValueKey& rhs) const { return u == rhs.u; }
+   inline void operator=(const ValueKey& rhs) { u = rhs.u; d = rhs.d; }
 };
 
 
@@ -173,7 +174,7 @@ class Digraph {
       cost_t shortest_path_for_dummies(node_t start_node, node_t end_node, vector<node_t>& previous) {    
 	
          CustomQueue      digraph_priority_queue;
-         vector<ValueKey> distance_from_source(n_nodes, ValueKey(0, 0));
+         vector<ValueKey> distance_from_source(n_nodes, ValueKey(Inf, 0));
 	 vector<Label>    node_status(n_nodes, UNREACHED);  
 	 
          /// Initialize the source distance
@@ -304,7 +305,7 @@ cost_t runDijkstra( char* argv[] ) {
    cout << "Distance Vector: ";
    print_distance_vector(Path);
    fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
-
+  
    return dist;
 }
 
