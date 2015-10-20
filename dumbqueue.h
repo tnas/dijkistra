@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <boost/concept_check.hpp>
 
-#define INITIAL_QUEUE_CAPACITY 10
+#define INITIAL_QUEUE_CAPACITY 500000
 
 using namespace std;
 using std::vector;

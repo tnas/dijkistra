@@ -276,10 +276,11 @@ cost_t runDijkstra( char* argv[] ) {
    
    vector<node_t> Path(n_nodes);
    cost_t dist; 
+   timer execution_timer;
+   double init_time;
    
    // Dijikistra execution
-   timer execution_timer;
-   double init_time = execution_timer.elapsed();
+   init_time = execution_timer.elapsed();
    dist = Graph.shortest_path_for_dummies<SimpleQueue>(0, 5, Path);
    cout << "Run Dijikistra - Traditional Queue\n";
    cout << "Distance Vector: ";
