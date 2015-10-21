@@ -285,7 +285,7 @@ cost_t runDijkstra( char* argv[] ) {
    cout << "Run Dijikistra - Traditional Queue\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
-   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
+   fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, dist);
    
    cout << "\n";
    
@@ -295,7 +295,7 @@ cost_t runDijkstra( char* argv[] ) {
    cout << "Run Dijikistra - Binary Heap\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
-   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
+   fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, dist);
    
    cout << "\n";
    
@@ -305,7 +305,7 @@ cost_t runDijkstra( char* argv[] ) {
    cout << "Run Dijikistra - Fibonacci Heap\n";
    cout << "Distance Vector: ";
    print_distance_vector(Path);
-   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, dist);
+   fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, dist);
   
    return dist;
 }
