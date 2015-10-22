@@ -1,2 +1,2 @@
 # dijkistra
-Implementation of Dijkistra Algorithm
+Implementation of Dijkstra Algorithm
