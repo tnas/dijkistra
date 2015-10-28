@@ -1,6 +1,6 @@
 project(dijkistra)
 
-add_executable(dijkistra main.cpp)
+add_executable(dijkistra my_dijkstra.cpp dijkstra_boost.cpp main.cpp)
 
 install(TARGETS dijkistra RUNTIME DESTINATION bin)
 
