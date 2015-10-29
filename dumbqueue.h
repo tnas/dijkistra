@@ -81,7 +81,9 @@ void DumbQueue<T>::pop()
   
   vector_iterator it;
   for (it = queue.begin(); it != queue.end(); ++it)
-    if (*it > *max_element) max_element = it;
+    if (*it > *max_element) {
+      max_element = it;
+    }
   
   queue.push_back(*max_element);
   queue.erase(max_element);
@@ -113,7 +115,9 @@ T DumbQueue<T>::top()
   
   vector_iterator it;
   for (it = queue.begin(); it != queue.end(); ++it)
-    if (*it > *max_element) max_element = it;
+    if (*it > *max_element) {
+      max_element = it;
+    }
   
   return *max_element;
 }
