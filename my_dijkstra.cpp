@@ -179,7 +179,6 @@ class Digraph {
          return -(*distance_from_source[end_node]).d;
       }
       
-      
       template <typename CustomQueue>
       cost_t shortest_path_for_dummies(node_t start_node, node_t end_node, vector<node_t>& previous) {    
 	
