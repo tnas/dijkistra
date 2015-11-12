@@ -60,7 +60,7 @@ void run_kruskal(char* graph_path)
 {
    Graph graph = Dimacs<Graph>::load_digraph(graph_path);
    SpanningTree mst = graph.kruskal_mst();
-   mst.print_edges();
+   mst.print_connected_components();
    cout << "Total cost: " << mst.get_total_cost() << "\n";
 }
 
