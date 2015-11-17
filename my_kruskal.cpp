@@ -61,8 +61,16 @@ private:
   
 public:
   
-  SpanningTree(node_t n_nodes) : total_cost(0), max_edges(n_nodes-1) { 
-    
+  SpanningTree(node_t n_nodes) : total_cost(0), max_edges(n_nodes-1)
+  { 
+    /*
+      for (int comp = 0; comp < max_edges; ++comp)
+      {
+	EdgeList tmp;
+	tmp.reserve(10);
+	connected_components.push_back(tmp);
+      }
+      */
   }
   
   void print_connected_components() 
@@ -88,7 +96,17 @@ public:
       if (map.component_source_node == NO_CONNECTED_COMPONENT)
       {
 	int component = connected_components.size();
+	EdgeList tmp;
+	tmp.reserve(10);
+	connected_components.push_back(tmp);
 	connected_components[component].push_back(_edge);
+	
+	// Adding back arc
+	Edge back_arc(_edge.v, _edge.u, _edge.c);
+	connected_components[component].push_back(back_arc);
+	
+	total_cost += _edge.c;
+	
 	return true;
       }
       
@@ -96,14 +114,43 @@ public:
     }
     else 
     {
-      int component = map.component_source_node == NO_CONNECTED_COMPONENT ? map.component_target_node
-	: map.component_source_node;
-      connected_components[component].push_back(_edge);
       
-      for (EdgeIterator iter = connected_components[map.component_target_node].begin(); 
-	 iter != connected_components[map.component_target_node].end(); ++iter)
-	   connected_components[component].push_back(*iter);
-      connected_components.erase(connected_components.begin()+map.component_target_node);
+      if (map.component_source_node == NO_CONNECTED_COMPONENT || map.component_target_node == NO_CONNECTED_COMPONENT)
+      {
+	int component = map.component_source_node == NO_CONNECTED_COMPONENT ? map.component_target_node
+	  : map.component_source_node;
+	connected_components[component].push_back(_edge);
+	
+	// Adding back arc
+	Edge back_arc(_edge.v, _edge.u, _edge.c);
+	connected_components[component].push_back(back_arc);
+      }
+      else
+      {
+	int component, del_component;
+	
+	if (map.component_source_node < map.component_target_node)
+	{
+	  component = map.component_source_node;
+	  del_component = map.component_target_node;
+	}
+	else 
+	{
+	  component = map.component_target_node;
+	  del_component = map.component_source_node;
+	}
+	
+	connected_components[component].push_back(_edge);
+	
+	// Adding back arc
+	Edge back_arc(_edge.v, _edge.u, _edge.c);
+	connected_components[component].push_back(back_arc);
+	
+	for (EdgeIterator iter = connected_components[del_component].begin(); 
+	  iter != connected_components[del_component].end(); ++iter)
+	    connected_components[component].push_back(*iter);
+	connected_components.erase(connected_components.begin()+del_component);
+      }
     }
     
     total_cost += _edge.c;
