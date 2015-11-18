@@ -61,17 +61,7 @@ private:
   
 public:
   
-  SpanningTree(node_t n_nodes) : total_cost(0), max_edges(n_nodes-1)
-  { 
-    /*
-      for (int comp = 0; comp < max_edges; ++comp)
-      {
-	EdgeList tmp;
-	tmp.reserve(10);
-	connected_components.push_back(tmp);
-      }
-      */
-  }
+  SpanningTree(node_t n_nodes) : total_cost(0), max_edges(n_nodes-1) { }
   
   void print_connected_components() 
   {
@@ -208,11 +198,7 @@ class Graph {
 	return n_nodes;
       }
       
-      void print_edges() 
-      {
-	for (EdgeIterator iter = edges.begin(); iter < edges.end(); ++iter)
-	  cout << "from: " << (*iter).u+1 << " ==> to: " << (*iter).v+1 << " (" << (*iter).c << ")\n";
-      }
+      
       
       SpanningTree kruskal_mst() 
       {
