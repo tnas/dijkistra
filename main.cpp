@@ -4,6 +4,7 @@
 #include "my_kruskal.cpp"
 #include "dijkstra_boost.cpp"
 #include "kruskal_boost.cpp"
+#include "union_find_kruskal.cpp"
 #include "dimacs.h"
 
 
@@ -62,19 +63,29 @@ void run_kruskal(char* graph_path)
   
    timer execution_timer;
    double init_time;
-   /*
+   
    Graph graph = Dimacs<Graph>::load_digraph(graph_path);
    init_time = execution_timer.elapsed();
    SpanningTree mst = graph.kruskal_mst();
    //mst.print_connected_components();
    cout << "Run Kruskal - Vector Implementation\n";
    fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, mst.get_total_cost());
-   */
+   
+   cout << "\n";
+   
    GraphBoost graphB = Dimacs<GraphBoost>::load_digraph(graph_path);
    init_time = execution_timer.elapsed();
    graphB.kruskal_mst();
    cout << "Run Kruskal - Boost Implementation\n";
    fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, graphB.get_total_cost());
+   
+   cout << "\n";
+   
+   GraphUF graphUF = Dimacs<GraphUF>::load_digraph(graph_path);
+   init_time = execution_timer.elapsed();
+   graphUF.Kruskal_MST();
+   cout << "Run Kruskal - Union Find Implementation\n";
+   fprintf(stdout, "Time: %.4f\nCost: %lld\n", execution_timer.elapsed() - init_time, graphUF.get_total_cost());
 }
 
 int main(int argc, char **argv) {
