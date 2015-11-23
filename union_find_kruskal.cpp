@@ -47,7 +47,7 @@ inline void inp(int *n)
     *n = (*n)*sign;
 }
 
-const int MAX = 10010;
+const int MAX = 99999999;
 
 // Class implementing Union Find Data Structure with Path Compression
 class Union_Find

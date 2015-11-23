@@ -16,6 +16,7 @@
  */
 #include <algorithm>
 #include <vector>
+#include <boost/concept_check.hpp>
 
 #include "dimacs.h"
 
@@ -37,6 +38,14 @@ class Edge {
       
       inline bool operator<(const Edge& rhs) const { return c < rhs.c; }
 };
+
+
+int compare(const void* a, const void* b)
+{
+	if ((*(Edge*)a).c < (*(Edge*)b).c) return -1;
+	if ((*(Edge*)a).c == (*(Edge*)b).c) return 0;
+	if ((*(Edge*)a).c > (*(Edge*)b).c) return 1;
+}
 
 typedef vector<Edge>::iterator EdgeIterator;
 typedef vector<Edge> EdgeList;
@@ -167,6 +176,9 @@ public:
 	
 	if (edge.v == (*iter).u || edge.v == (*iter).v)
 	  map.component_target_node = component;
+	
+	if (edge.u != NO_CONNECTED_COMPONENT && edge.v != NO_CONNECTED_COMPONENT)
+		return map;
       }
     }
     
@@ -203,7 +215,8 @@ class Graph {
       SpanningTree kruskal_mst() 
       {
 	SpanningTree mst(n_nodes);
-	sort(edges.begin(), edges.end());
+	//sort(edges.begin(), edges.end());
+	qsort(&edges[0], edges.size(), sizeof(Edge), compare);
 	
 	long edges_added = 0;
 	
