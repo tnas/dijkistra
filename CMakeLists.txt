@@ -1,6 +1,6 @@
 project(dijkistra)
 
-add_executable(dijkistra my_prim.cpp my_dijkstra.cpp dijkstra_boost.cpp kruskal_boost.cpp union_find_kruskal.cpp main.cpp ./prim/Grafo.h)
+add_executable(dijkistra my_prim.cpp my_dijkstra.cpp dijkstra_boost.cpp kruskal_boost.cpp union_find_kruskal.cpp main.cpp)
 
 install(TARGETS dijkistra RUNTIME DESTINATION bin)
 

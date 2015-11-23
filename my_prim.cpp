@@ -15,9 +15,8 @@
  *
  */
 
-#include "./prim/Grafo.h"
-#include "./prim/prim.cpp"
-#include <boost/graph/graph_concepts.hpp>
+#include "prim/prim2.h"
+#include "prim/Grafo.h"
 
 
 typedef int32_t    node_t;
@@ -42,7 +41,7 @@ public:
 	
 	void prim_mst()
 	{
-		total_cost = primMST(n_nodes, grafo);
+		total_cost = primMST(n_nodes, &grafo);
 	}
 	
 	int get_total_cost()

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "prim2.h"
 #include "DHeap.h"
 #include "Vertice.h"
 #include "Grafo.h"

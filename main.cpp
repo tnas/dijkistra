@@ -73,19 +73,19 @@ void run_kruskal(char* graph_path)
    
    cout << "\n";
    
-//    GraphBoost graphB = Dimacs<GraphBoost>::load_digraph(graph_path);
-//    init_time = execution_timer.elapsed();
-//    graphB.kruskal_mst();
-//    cout << "Run Kruskal - Boost Implementation\n";
-//    fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, graphB.get_total_cost());
-//    
-//    cout << "\n";
-//    
-//    GraphUF graphUF = Dimacs<GraphUF>::load_digraph(graph_path);
-//    init_time = execution_timer.elapsed();
-//    graphUF.Kruskal_MST();
-//    cout << "Run Kruskal - Union Find Implementation\n";
-//    fprintf(stdout, "Time: %.4f\nCost: %lld\n", execution_timer.elapsed() - init_time, graphUF.get_total_cost());
+   GraphBoost graphB = Dimacs<GraphBoost>::load_digraph(graph_path);
+   init_time = execution_timer.elapsed();
+   graphB.kruskal_mst();
+   cout << "Run Kruskal - Boost Implementation\n";
+   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, graphB.get_total_cost());
+   
+   cout << "\n";
+   
+   GraphUF graphUF = Dimacs<GraphUF>::load_digraph(graph_path);
+   init_time = execution_timer.elapsed();
+   graphUF.Kruskal_MST();
+   cout << "Run Kruskal - Union Find Implementation\n";
+   fprintf(stdout, "Time: %.4f\nCost: %lld\n", execution_timer.elapsed() - init_time, graphUF.get_total_cost());
    
 }
 
@@ -99,7 +99,7 @@ void run_prim(char* graph_path)
    PrimGraph graph = Dimacs<PrimGraph>::load_digraph(graph_path);
    init_time = execution_timer.elapsed();
    graph.prim_mst();
-   cout << "Run Prim - Dheap Implementation\n";
+   cout << "Run Prim - DHeap Implementation\n";
    fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, graph.get_total_cost());
    
    cout << "\n";
