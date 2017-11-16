@@ -100,33 +100,50 @@ void run_prim(char* graph_path)
    init_time = execution_timer.elapsed();
    graph.prim_mst();
    cout << "Run Prim - DHeap Implementation\n";
-   fprintf(stdout, "Time: %.4f\nCost: %lu\n", execution_timer.elapsed() - init_time, graph.get_total_cost());
+   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, graph.get_total_cost());
    
    cout << "\n";
 }
 
+
 int main(int argc, char **argv) {
-   
-   Algorithm alg = PRIM;
-  
-   if (argc != 2) {
-       cout << "usage: ./[dijkstra|kruskal|prim] <filename>\n";
-       exit ( EXIT_FAILURE );
-   }
-   
+
+    int opt;
+    int alg = DIJKSTRA;
+    char* file_name = NULL;
+    
+    
+    while ((opt = getopt(argc, argv, "a:f:")) != -1)
+    {
+        switch (opt)
+        {
+            case 'f' :
+                file_name = optarg;
+                break;
+                
+            case 'a' :
+                alg = atoi(optarg);
+                break;      
+                
+            default :
+                cout << "usage: ./[dijkstra|kruskal|prim] <filename>\n";
+                exit (EXIT_FAILURE);
+        }
+    }
+
    switch (alg) 
    {
-     case (DIJKSTRA) :
-	run_dijkstra(argv[1]);
-	break;
+        case (DIJKSTRA) :
+        run_dijkstra(file_name);
+        break;
 	
-     case (KRUSKAL) :
-       run_kruskal(argv[1]);
-       break;
+        case (KRUSKAL) :
+        run_kruskal(file_name);
+        break;
        
-     case(PRIM) :
-       run_prim(argv[1]);
-       break;
+        case(PRIM) :
+        run_prim(file_name);
+        break;
    }
   
   return 0;

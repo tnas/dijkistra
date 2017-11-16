@@ -106,7 +106,7 @@ private:
   
 public:
   
-  GraphUF(node_t n_nodes, edge_t m_edges) : n(n_nodes), e(m_edges), i(0), T(0)
+  GraphUF(node_t n_nodes, edge_t m_edges) : n(n_nodes), e(m_edges), T(0), i(0)
   {
     graph.resize(e);
   }

@@ -17,6 +17,7 @@
 #include <boost/heap/d_ary_heap.hpp>
 #include <boost/heap/fibonacci_heap.hpp>
 #include <boost/integer_traits.hpp>
+#include <iostream>
 
 #include "dumbqueue.h"
 #include "dimacs.h"

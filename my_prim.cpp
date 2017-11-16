@@ -32,7 +32,7 @@ private:
 	int total_cost;
 	
 public:
-	PrimGraph(node_t nodes, edge_t edges) : n_nodes(nodes), m_edges(edges), grafo(Grafo(n_nodes)) {  }
+	PrimGraph(node_t nodes, edge_t edges) : grafo(Grafo(n_nodes)), n_nodes(nodes), m_edges(edges) {  }
 	
 	void addArc(node_t source_node, node_t target_node, cost_t cost) 
 	{    

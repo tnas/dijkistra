@@ -43,8 +43,9 @@ class Edge {
 int compare(const void* a, const void* b)
 {
 	if ((*(Edge*)a).c < (*(Edge*)b).c) return -1;
-	if ((*(Edge*)a).c == (*(Edge*)b).c) return 0;
+// 	if ((*(Edge*)a).c == (*(Edge*)b).c) return 0;
 	if ((*(Edge*)a).c > (*(Edge*)b).c) return 1;
+    return 0; //(*(Edge*)a).c == (*(Edge*)b).c
 }
 
 typedef vector<Edge>::iterator EdgeIterator;
@@ -74,7 +75,7 @@ public:
   
   void print_connected_components() 
   {
-    for(int component = 0; component < connected_components.size(); ++component)
+    for(unsigned int component = 0; component < connected_components.size(); ++component)
     {
       for (EdgeIterator iter = connected_components[component].begin(); iter != connected_components[component].end(); ++iter)
       {
@@ -167,7 +168,7 @@ public:
   {
     EdgeComponent map;
     
-    for(int component = 0; component < connected_components.size(); ++component)
+    for(unsigned int component = 0; component < connected_components.size(); ++component)
     {
       for (EdgeIterator iter = connected_components[component].begin(); iter != connected_components[component].end(); ++iter)
       {

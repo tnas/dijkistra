@@ -35,19 +35,19 @@ typedef std::pair<int, int> E;
 class GraphBoost {
   
 private:
-  int num_nodes;
-  size_t num_edges;
-  GraphB g;
-  property_map<GraphB, edge_weight_t>::type weightmap;
-  property_map < GraphB, edge_weight_t >::type weight;
-  vector<EdgeB> spanning_tree;
+    int num_nodes;
+    size_t num_edges;
+    GraphB g;
+    property_map<GraphB, edge_weight_t>::type weightmap;
+    property_map < GraphB, edge_weight_t >::type weight;
+    vector<EdgeB> spanning_tree;
   
 public:
   
-  GraphBoost(node_t n_nodes, edge_t m_edges) : num_edges(m_edges), num_nodes(n_nodes), g(GraphB(n_nodes)) 
-  { 
-    get(edge_weight, g);
-  }
+    GraphBoost(node_t n_nodes, edge_t m_edges) : num_nodes(n_nodes), num_edges(m_edges), g(GraphB(n_nodes)) 
+    { 
+        get(edge_weight, g);
+    }
   
   void addArc(node_t source_node, node_t target_node, cost_t cost) 
   {    
