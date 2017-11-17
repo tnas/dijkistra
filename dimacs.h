@@ -27,54 +27,60 @@ typedef int64_t    cost_t;
 template<typename G>
 class Dimacs
 {
-public :
+    public :
   
-  static G load_digraph(char* dimacs_instance_path)
-  {
-    node_t n_nodes;
-    edge_t m_edges;
-  
-    /// Read instance from the DIMACS
-    ifstream infile(dimacs_instance_path); 
-    if (!infile) 
-	exit (EXIT_FAILURE); 
+        static G load_digraph(char* dimacs_instance_path)
+        { 
+            node_t n_nodes;
+            edge_t m_edges;
+        
+            /// Read instance from the DIMACS
+            ifstream infile(dimacs_instance_path); 
+            if (!infile) 
+            exit (EXIT_FAILURE); 
 
-    string line, ps;
-    char lineheader;
-    bool finishedHeader = false;
-    
-    // Reading file header
-    while (!finishedHeader) {
-      getline(infile, line);
-      istringstream linestream(line);
-      linestream >> lineheader;
-      
-      switch(lineheader) {
-	case 'c': break;
-	case 'p':
-	  linestream >> ps >> n_nodes >> m_edges;
-	  break;
-	case 'a': 
-	  finishedHeader = true;
-	  break;
-      }
-    }
-    
-    /// Build the graph
-    G digraph = G(n_nodes, m_edges);
-    
-    int v, w;
-    cost_t c;
-    
-    // Reading file body
-    do {
-      istringstream linestream(line);
-      linestream >> lineheader >> v >> w >> c;
-      digraph.addArc(v-1, w-1, c);
-    } while (getline(infile, line));
-    
-    return digraph;
-  }
+            string line, ps;
+            char lineheader;
+            bool finishedHeader = false;
+            
+            // Reading file header
+            while (!finishedHeader) 
+            {
+                getline(infile, line);
+                istringstream linestream(line);
+                linestream >> lineheader;
+                
+                switch(lineheader) {
+                    
+                    case 'c': 
+                        break;
+                    
+                    case 'p':
+                        linestream >> ps >> n_nodes >> m_edges;
+                        break;
+                        
+                    case 'a': 
+                        finishedHeader = true;
+                        break;
+                }
+            }
+            
+            /// Build the graph
+            G digraph = G(n_nodes, m_edges);
+            
+            int v, w;
+            cost_t c;
+            
+            // Reading file body
+            do 
+            {
+                istringstream linestream(line);
+                linestream >> lineheader >> v >> w >> c;
+                digraph.addArc(v-1, w-1, c);
+            } while (getline(infile, line));
+            
+            return digraph;
+        }
 };
 
 

@@ -78,53 +78,57 @@ class Digraph {
       static const cost_t Inf = integer_traits<cost_t>::const_max;
       
    public:	
+       
+       Digraph(node_t _n, edge_t _m) : n_nodes(_n), m_edges(_m)
+       {
+            assert(n_nodes < Inf && m_edges < Inf);
+            adjacency_list.reserve(n_nodes);
+            
+            /// Reserve memory for the set of arcs
+            int avg_degree = m_edges/n_nodes+1;
+            
+            for ( int i = 0; i < n_nodes; ++i ) {
+                FSArcList tmp;
+                tmp.reserve(avg_degree);   
+                adjacency_list.push_back(tmp);
+            }      
+        }
      
-      Digraph(node_t _n, edge_t _m) : n_nodes(_n), m_edges(_m)
-      {
-	 assert(n_nodes < Inf && m_edges < Inf);
-         adjacency_list.reserve(n_nodes);
-         /// Reserve memory for the set of arcs
-         int avg_degree = m_edges/n_nodes+1;
-         for ( int i = 0; i < n_nodes; ++i ) {
-            FSArcList tmp;
-            tmp.reserve(avg_degree);   
-            adjacency_list.push_back(tmp);
-         }      
-      }
-     
-      node_t get_nnodes()
-      {
-	return n_nodes;
-      }
+        node_t get_nnodes()
+        {
+            return n_nodes;
+        }
       
-      void addArc(node_t source_node, node_t target_node, cost_t cost) {    
-         adjacency_list[source_node].push_back(Arc(target_node, cost));
-      }
+        void addArc(node_t source_node, node_t target_node, cost_t cost) 
+        {    
+            adjacency_list[source_node].push_back(Arc(target_node, cost));
+        }
       
-      void print_adjacency_list() {
+        void print_adjacency_list() 
+        {
 	
-	vector<FSArcList>::iterator it_nodes;
-	node_t node = 0;
-	
-	for (it_nodes = adjacency_list.begin(); it_nodes < adjacency_list.end(); ++it_nodes) {
-	  
-	  cout << "from: " << node++ << " ==> ";
-	  
-	  FSArcIter it_arc;
-	  
-	  for (it_arc = (*it_nodes).begin(); it_arc < (*it_nodes).end(); ++it_arc) {
-	    cout << "to:" << (*it_arc).w << " (" << (*it_arc).c << ") | ";
-	  }
-	  
-	  cout << "\n";
-	}
-      }
+            vector<FSArcList>::iterator it_nodes;
+            node_t node = 0;
+            
+            for (it_nodes = adjacency_list.begin(); it_nodes < adjacency_list.end(); ++it_nodes) {
+            
+                cout << "from: " << node++ << " ==> ";
+                
+                FSArcIter it_arc;
+                
+                for (it_arc = (*it_nodes).begin(); it_arc < (*it_nodes).end(); ++it_arc) {
+                    cout << "to:" << (*it_arc).w << " (" << (*it_arc).c << ") | ";
+                }
+                
+                cout << "\n";
+            }
+        }
      
       void print_distance_vector(vector<node_t> path) 
       {
-	for (vector<node_t>::iterator iter = path.begin(); iter != path.end(); ++iter)
-	  cout << *iter << " ";
-	cout << "\n";
+            for (vector<node_t>::iterator iter = path.begin(); iter != path.end(); ++iter)
+            cout << *iter << " ";
+            cout << "\n";
       }
      
       ///--------------------------------------------------
@@ -183,9 +187,9 @@ class Digraph {
       template <typename CustomQueue>
       cost_t shortest_path_for_dummies(node_t start_node, node_t end_node, vector<node_t>& previous) {    
 	
-         CustomQueue      digraph_priority_queue;
-         vector<ValueKey> distance_from_source(n_nodes, ValueKey(Inf, 0));
-	 vector<Label>    node_status(n_nodes, UNREACHED);  
+        CustomQueue      digraph_priority_queue;
+        vector<ValueKey> distance_from_source(n_nodes, ValueKey(Inf, 0));
+        vector<Label>    node_status(n_nodes, UNREACHED);  
 	 
          /// Initialize the source distance
          distance_from_source[start_node] = digraph_priority_queue.push(ValueKey(0, start_node));

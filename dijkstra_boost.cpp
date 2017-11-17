@@ -33,30 +33,30 @@ typedef graph_traits<DigraphB>::vertex_descriptor NodeB;
 
 
 class DigraphBoost {
-  
-   private:
+    
+    private:
      
-      node_t  n_nodes;
-      edge_t  m_edges;
-      DigraphB digraph;
+        node_t  n_nodes;
+        edge_t  m_edges;
+        DigraphB digraph;
       
-   public:	
+    public:	
      
-      DigraphBoost(node_t _n, edge_t _m) : n_nodes(_n), m_edges(_m), digraph(DigraphB(_n)) { }
+        DigraphBoost(node_t _n, edge_t _m) : n_nodes(_n), m_edges(_m), digraph(DigraphB(_n)) { }
      
-      void addArc(node_t source_node, node_t target_node, cost_t cost) 
-      {    
-	add_edge(source_node, target_node, cost, digraph);
-      }
+        void addArc(node_t source_node, node_t target_node, cost_t cost) 
+        {    
+            add_edge(source_node, target_node, cost, digraph);
+        }
       
-      cost_t shortest_path(node_t start_node, node_t end_node)
-      {
-	vector<NodeB> P(n_nodes);
-	vector<cost_t> D(n_nodes, std::numeric_limits<cost_t>::max());
+        cost_t shortest_path(node_t start_node, node_t end_node)
+        {
+            vector<NodeB> P(n_nodes);
+            vector<cost_t> D(n_nodes, std::numeric_limits<cost_t>::max());
 	
-	dijkstra_shortest_paths(digraph, start_node, predecessor_map(&P[0]).distance_map(&D[0]));
+            dijkstra_shortest_paths(digraph, start_node, predecessor_map(&P[0]).distance_map(&D[0]));
 	
-	return D[end_node];
-      }
+            return D[end_node];
+        }
 };
 

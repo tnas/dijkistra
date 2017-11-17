@@ -29,18 +29,20 @@ using std::vector;
 template<typename T>
 class DumbQueue
 {
-private :
-    vector<T> queue;
-public:
+
+    private :
+        vector<T> queue;
+        
+    public:
   
-    DumbQueue();
-    ~DumbQueue();
-    
-    bool empty();
-    T push(T node);
-    void pop();
-    void increase(T target, T update);
-    T top();
+        DumbQueue();
+        ~DumbQueue();
+        
+        bool empty();
+        T push(T node);
+        void pop();
+        void increase(T target, T update);
+        T top();
 };
 
 // ************************
@@ -49,75 +51,77 @@ public:
 template<typename T>
 DumbQueue<T>::DumbQueue()
 {
-  queue.reserve(INITIAL_QUEUE_CAPACITY);
+    queue.reserve(INITIAL_QUEUE_CAPACITY);
 }
 
 template<typename T>
 DumbQueue<T>::~DumbQueue()
 {
-  queue.clear();
+    queue.clear();
 }
 
 template<typename T>
 bool DumbQueue<T>::empty()
 {
-  return queue.empty();
+    return queue.empty();
 }
 
 
 template<typename T>
 T DumbQueue<T>::push(T node) 
 {
-  queue.push_back(node);
-  return queue.back();
+    queue.push_back(node);
+    return queue.back();
 }
+
 
 template<typename T>
 void DumbQueue<T>::pop()
 {
-  typedef typename vector<T>::iterator vector_iterator;
-  
-  vector_iterator max_element = queue.begin();
-  
-  vector_iterator it;
-  for (it = queue.begin(); it != queue.end(); ++it)
-    if (*it > *max_element) {
-      max_element = it;
-    }
-  
-  queue.push_back(*max_element);
-  queue.erase(max_element);
-  queue.pop_back();
+    typedef typename vector<T>::iterator vector_iterator;
+    
+    vector_iterator max_element = queue.begin();
+    
+    vector_iterator it;
+    for (it = queue.begin(); it != queue.end(); ++it)
+        if (*it > *max_element) {
+        max_element = it;
+        }
+    
+    queue.push_back(*max_element);
+    queue.erase(max_element);
+    queue.pop_back();
 }
 
 
 template<typename T>
 void DumbQueue<T>::increase(T target, T update)
 {
-  typedef typename vector<T>::iterator vector_iterator;
-  
-  for (vector_iterator it = queue.begin(); it != queue.end(); ++it)
-  {
-    if (*it == target) 
+    typedef typename vector<T>::iterator vector_iterator;
+    
+    for (vector_iterator it = queue.begin(); it != queue.end(); ++it)
     {
-      *it = update;
-      break;
+        if (*it == target) 
+        {
+            *it = update;
+            break;
+        }
     }
-  }
 }
 
 template<typename T>
 T DumbQueue<T>::top()
 {
-  typedef typename vector<T>::iterator vector_iterator;
-  
-  vector_iterator max_element = queue.begin();
-  
-  vector_iterator it;
-  for (it = queue.begin(); it != queue.end(); ++it)
-    if (*it > *max_element) {
-      max_element = it;
-    }
-  
-  return *max_element;
+    typedef typename vector<T>::iterator vector_iterator;
+    
+    vector_iterator max_element = queue.begin();
+    
+    vector_iterator it;
+    for (it = queue.begin(); it != queue.end(); ++it)
+        
+        if (*it > *max_element) {
+            max_element = it;
+        }
+    
+    return *max_element;
 }
