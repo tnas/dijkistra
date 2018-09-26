@@ -14,10 +14,11 @@
  * limitations under the License.
  *
  */
-#include "stdio.h"
-#include "string.h"
-#include "vector"
-#include "algorithm"
+
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -25,6 +26,11 @@ using namespace std;
 #define pip pair<int, pii>
 #define F first
 #define S second
+
+#ifdef WIN32
+	// no getchar_unlocked on Windows so call getchar()
+	inline int getchar_unlocked() { return getchar(); }
+#endif
 
 typedef int32_t    node_t;
 typedef int32_t    edge_t;

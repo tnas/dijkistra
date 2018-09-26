@@ -1,15 +1,19 @@
 #include <boost/progress.hpp> 
 
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "my_dijkstra.cpp"
 #include "my_kruskal.cpp"
 #include "dijkstra_boost.cpp"
 #include "kruskal_boost.cpp"
 #include "union_find_kruskal.cpp"
 #include "dimacs.h"
-#include "my_prim.cpp"
-
 
 using namespace boost;
+using namespace std;
 using boost::timer;
 
 enum Algorithm { DIJKSTRA, KRUSKAL, PRIM };
@@ -86,23 +90,6 @@ void run_kruskal(char* graph_path)
    graphUF.Kruskal_MST();
    cout << "Run Kruskal - Union Find Implementation\n";
    fprintf(stdout, "Time: %.4f\nCost: %lld\n", execution_timer.elapsed() - init_time, graphUF.get_total_cost());
-   
-}
-
-
-void run_prim(char* graph_path)
-{
-  
-   timer execution_timer;
-   double init_time;
-   
-   PrimGraph graph = Dimacs<PrimGraph>::load_digraph(graph_path);
-   init_time = execution_timer.elapsed();
-   graph.prim_mst();
-   cout << "Run Prim - DHeap Implementation\n";
-   fprintf(stdout, "Time: %.4f\nCost: %d\n", execution_timer.elapsed() - init_time, graph.get_total_cost());
-   
-   cout << "\n";
 }
 
 
@@ -111,8 +98,7 @@ int main(int argc, char **argv) {
     int opt;
     int alg = DIJKSTRA;
     char* file_name = NULL;
-    
-    
+
     while ((opt = getopt(argc, argv, "a:f:")) != -1)
     {
         switch (opt)
@@ -142,7 +128,6 @@ int main(int argc, char **argv) {
         break;
        
         case(PRIM) :
-        run_prim(file_name);
         break;
    }
   

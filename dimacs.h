@@ -17,6 +17,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace std;
+
 #ifndef DIMACS_H
 #define DIMACS_H
 
