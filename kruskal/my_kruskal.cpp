@@ -18,7 +18,7 @@
 #include <vector>
 #include <boost/concept_check.hpp>
 
-#include "dimacs.h"
+#include "../common/dimacs.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ class Edge {
 };
 
 
-int compare(const void* a, const void* b)
+inline int compare(const void* a, const void* b)
 {
 	if ((*(Edge*)a).c < (*(Edge*)b).c) return -1;
 // 	if ((*(Edge*)a).c == (*(Edge*)b).c) return 0;

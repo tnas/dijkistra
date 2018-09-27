@@ -19,8 +19,8 @@
 #include <boost/integer_traits.hpp>
 #include <iostream>
 
-#include "dumbqueue.h"
-#include "dimacs.h"
+#include "../common/dumbqueue.h"
+#include "../common/dimacs.h"
 
 using namespace std;
 using boost::integer_traits;

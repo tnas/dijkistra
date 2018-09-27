@@ -16,17 +16,23 @@ endif()
 project(dijkistra)
 
 add_executable(dijkistra main.cpp
-                         my_dijkstra.cpp 
-                         dijkstra_boost.cpp 
-                         kruskal_boost.cpp 
-                         union_find_kruskal.cpp)
+                         dijkstra/my_dijkstra.cpp 
+                         dijkstra/dijkstra_boost.cpp 
+#                          kruskal/kruskal_boost.cpp 
+#                          kruskal/union_find_kruskal.cpp
+                         test/spptest.cpp)
 
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 target_link_libraries(dijkistra ${Boost_LIBRARIES})
-  
 install(TARGETS dijkistra RUNTIME DESTINATION bin)
 
-list(APPEND CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
+list(APPEND CMAKE_CXX_FLAGS "-Wall -o3")
+if (WIN32)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format")
+endif()
 
 add_subdirectory(instances)
+add_subdirectory(common)
+add_subdirectory(dijkstra)
+add_subdirectory(kruskal)
