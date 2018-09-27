@@ -16,10 +16,11 @@ endif()
 project(dijkistra)
 
 add_executable(dijkistra main.cpp
-                         dijkstra/my_dijkstra.cpp 
-                         dijkstra/dijkstra_boost.cpp 
-#                          kruskal/kruskal_boost.cpp 
-#                          kruskal/union_find_kruskal.cpp
+                         dijkstra/simpledijkstra.cpp 
+                         dijkstra/boostdijkstra.cpp 
+                         kruskal/simplekruskal.cpp 
+                         kruskal/boostkruskal.cpp 
+                         kruskal/kruskalunionfind.cpp
                          test/spptest.cpp)
 
 find_package(Boost REQUIRED)

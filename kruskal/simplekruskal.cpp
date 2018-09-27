@@ -16,6 +16,7 @@
  */
 #include <algorithm>
 #include <vector>
+#include <iostream>
 #include <boost/concept_check.hpp>
 
 #include "../common/dimacs.h"
